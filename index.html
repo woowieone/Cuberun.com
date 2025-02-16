@@ -114,6 +114,12 @@
             font-size: 24px;
             color: white;
         }
+
+        #logo {
+            width: 100px; /* Adjust the width as needed */
+            height: auto; /* Maintain aspect ratio */
+            margin-bottom: 20px; /* Space between logo and text */
+        }
     </style>
 </head>
 
@@ -126,6 +132,7 @@
             <img src="https://imagizer.imageshack.com/v2/361x361q70/r/924/sAFgKF.png" alt="Pause" id="buttonImage">
         </button>
         <div id="startingScreen">
+            <img id="logo" src="https://imagizer.imageshack.com/img924/226/No6GcW.png" alt="Logo"> <!-- Update this with your logo URL -->
             <div id="startingText">Use WASD to start game</div>
         </div>
     </div>
@@ -198,6 +205,7 @@
         function spawnEnemy() {
             const enemy = document.createElement('div');
             enemy.classList.add('enemy');
+
             const playerRect = player.getBoundingClientRect();
             let x, y, distance;
 
