@@ -1,4 +1,3 @@
-// game.js
 const gameArea = document.getElementById('gameArea');
 const player = document.getElementById('player');
 const scoreBoard = document.getElementById('scoreBoard');
@@ -88,15 +87,14 @@ function spawnEnemy() {
 function spawnPowerUp() {
     const powerUp = document.createElement('div');
     powerUp.classList.add('power-up');
-
     const x = Math.random() * (gameArea.clientWidth - 30);
     const y = Math.random() * (gameArea.clientHeight - 30);
-
     powerUp.style.left = `${x}px`;
     powerUp.style.top = `${y}px`;
 
     const type = Math.random() < 0.5 ? 1 : 2;
     powerUp.setAttribute('data-type', type);
+
     if (type === 1) {
         powerUp.style.backgroundImage = "url('https://imagizer.imageshack.com/v2/361x361q70/r/923/PoWJh7.png')";
     } else {
@@ -295,20 +293,6 @@ function startGame() {
     startSpawning();
 }
 
-// Service Worker Registration
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js') // Ensure this path is correct
-        .then(registration => {
-            console.log('Service Worker registered with scope:', registration.scope);
-        })
-        .catch(error => {
-            console.error('Service Worker registration failed:', error);
-        });
-} else {
-    console.warn('Service workers are not supported in this browser.');
-}
-
-// Pause functionality
 pauseButton.addEventListener('click', function () {
     isPaused = !isPaused;
     buttonImage.src = isPaused
@@ -316,7 +300,6 @@ pauseButton.addEventListener('click', function () {
         : 'https://imagizer.imageshack.com/v2/361x361q70/r/924/sAFgKF.png';
 
     if (isPaused) {
-        // Show the starting screen and change text
         startingScreen.style.display = 'flex'; // Display the starting screen
         document.getElementById('startingText').innerText = 'The game is paused. Use WASD to unpause'; // Change text
     } else {
@@ -326,7 +309,6 @@ pauseButton.addEventListener('click', function () {
 
 // Add event listeners for key state changes
 document.addEventListener('keydown', function (event) {
-    // Unpause the game when any of the WASD keys are pressed
     if (event.key === 'w' || event.key === 'a' || event.key === 's' || event.key === 'd') {
         if (isPaused) {
             isPaused = false; // Unpause the game
@@ -335,7 +317,6 @@ document.addEventListener('keydown', function (event) {
         }
     }
 
-    // Allow only one key to move at a time
     if (event.key === 'w') { keys.w = true; keys.s = false; keys.a = false; keys.d = false; }
     if (event.key === 'a') { keys.w = false; keys.s = false; keys.a = true; keys.d = false; }
     if (event.key === 's') { keys.w = false; keys.s = true; keys.a = false; keys.d = false; }
@@ -343,14 +324,6 @@ document.addEventListener('keydown', function (event) {
 });
 
 document.addEventListener('keyup', function (event) {
-    chrome.action.onClicked.addListener((tab) => {
-        chrome.windows.create({
-          url: chrome.runtime.getURL("cuberun.html"),
-          type: "popup",
-          width: Math.floor(screen.width * 0.6), // 60% of screen width
-          height: Math.floor(screen.height * 0.6), // 60% of screen height
-        });
-      });
     if (event.key === 'w') keys.w = false;
     if (event.key === 'a') keys.a = false;
     if (event.key === 's') keys.s = false;
@@ -358,9 +331,8 @@ document.addEventListener('keyup', function (event) {
 });
 
 // Event listener for tab visibility
-document.addEventListener('visibilitychange', function () {
+document.addEventListener('visibilitychange', function() {
     if (document.hidden) {
-        // If the document is no longer visible
         isPaused = true;
         buttonImage.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdRyxOH6cg2DlA-GPCASXmYlVia1Kt5U8fTw&s';
         startingScreen.style.display = 'flex'; // Show starting screen
@@ -369,3 +341,4 @@ document.addEventListener('visibilitychange', function () {
 });
 
 startGame(); // Start the game
+
