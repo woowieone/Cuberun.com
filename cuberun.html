@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,40 +10,92 @@
             margin: 0;
             overflow: hidden;
         }
+
         #gameArea {
             position: relative;
             width: 100vw;
             height: 100vh;
             background-color: black;
         }
+
         .player {
             position: absolute;
             width: 30px;
             height: 30px;
             background-color: blue;
+            background-size: cover;
             opacity: 1;
             z-index: 10;
         }
+
         .enemy {
             position: absolute;
             width: 30px;
             height: 30px;
             background-color: red;
+            background-size: cover;
             opacity: 1;
+            transition: background-color 0.3s;
         }
+
         .power-up {
             position: absolute;
             width: 30px;
             height: 30px;
             background-color: yellow;
+            background-size: cover;
         }
-        #scoreBoard, #highScoreBoard {
+
+        .pixel {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: blue;
+            opacity: 1;
+            transition: transform 0.5s, opacity 0.5s;
+        }
+
+        .trail {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        #highScoreBoard {
             position: absolute;
             top: 5px;
             left: 5px;
             font-size: 24px;
             color: white;
         }
+
+        #scoreBoard {
+            position: absolute;
+            top: 30px;
+            left: 5px;
+            font-size: 24px;
+            color: white;
+        }
+
+        #pauseButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            outline: none;
+        }
+
+        #buttonImage {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
         #startingScreen {
             position: absolute;
             top: 0;
@@ -56,59 +109,32 @@
             justify-content: center;
             z-index: 20;
         }
+
+        #startingImage {
+            width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        #startingText {
+            font-size: 24px;
+            color: white;
+        }
     </style>
 </head>
+
 <body>
     <div id="gameArea">
         <div id="scoreBoard">Score: 0</div>
         <div id="highScoreBoard">High Score: 0</div>
         <div class="player" id="player"></div>
+        <button id="pauseButton">
+            <img src="https://imagizer.imageshack.com/v2/361x361q70/r/924/sAFgKF.png" alt="Pause" id="buttonImage">
+        </button>
         <div id="startingScreen">
-            <div id="startingText">Use WASD to start game</div>
+            <div id="startingText" style="font:bold; font-size: 24px; color: white;">Use WASD to start game</div>
         </div>
     </div>
-
-    <script>
-        const gameArea = document.getElementById('gameArea');
-        const player = document.getElementById('player');
-        const scoreBoard = document.getElementById('scoreBoard');
-        const highScoreBoard = document.getElementById('highScoreBoard');
-        const startingScreen = document.getElementById('startingScreen');
-
-        let score = 0;
-        let highScore = localStorage.getItem('highScore') ? parseInt(localStorage.getItem('highScore')) : 0;
-        let isPaused = true;
-
-        highScoreBoard.innerText = `High Score: ${highScore}`;
-
-        function resetGame() {
-            score = 0;
-            updateScore();
-            startingScreen.style.display = 'none';
-        }
-
-        function updateScore() {
-            scoreBoard.innerText = `Score: ${score}`;
-        }
-
-        function startGame() {
-            resetGame();
-            const gameInterval = setInterval(() => {
-                if (!isPaused) {
-                    score++;
-                    updateScore();
-                }
-            }, 1000);
-        }
-
-        document.addEventListener('keydown', function(event) {
-            if (['w', 'a', 's', 'd'].includes(event.key)) {
-                isPaused = false;
-                startingScreen.style.display = 'none';
-            }
-        });
-
-        startGame(); // Start the game
-    </script>
 </body>
+
 </html>
