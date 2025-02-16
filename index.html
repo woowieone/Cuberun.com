@@ -20,7 +20,6 @@
             width: 30px;
             height: 30px;
             background-color: blue;
-            background-size: cover;
             opacity: 1;
             z-index: 10;
         }
@@ -29,8 +28,6 @@
             width: 30px;
             height: 30px;
             background-color: red;
-            background-size: cover;
-            opacity: 1;
             transition: background-color 0.3s;
         }
         .power-up {
@@ -38,14 +35,12 @@
             width: 30px;
             height: 30px;
             background-color: yellow;
-            background-size: cover;
         }
         .pixel {
             position: absolute;
             width: 5px;
             height: 5px;
             background-color: blue;
-            opacity: 1;
             transition: transform 0.5s, opacity 0.5s;
         }
         .trail {
@@ -102,9 +97,9 @@
             color: white;
         }
         #logo {
-            width: 100px; /* Adjust the width as needed */
-            height: auto; /* Maintain aspect ratio */
-            margin-bottom: 20px; /* Space between logo and text */
+            width: 100px;
+            height: auto;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -117,7 +112,7 @@
             <img src="https://imagizer.imageshack.com/v2/361x361q70/r/924/sAFgKF.png" alt="Pause" id="buttonImage">
         </button>
         <div id="startingScreen">
-            <img id="logo" src="https://imagizer.imageshack.com/img924/226/No6GcW.png" alt="Logo"> <!-- Update this with your logo URL -->
+            <img id="logo" src="https://imagizer.imageshack.com/img924/226/No6GcW.png" alt="Logo">
             <div id="startingText">Use WASD to start game</div>
         </div>
     </div>
@@ -141,9 +136,8 @@
         let playerSpeed = 2.25;
         let frozenEnemies = [];
         let speedBoostEndTime = 0;
-        let isPaused = true; // Start in paused state
+        let isPaused = true;
         let isSpawningActive = false;
-
         let enemySpeed = 0.7;
         const maxEnemySpeed = enemySpeed * 2;
 
@@ -163,7 +157,7 @@
             powerUps.forEach(powerUp => powerUp.remove());
             powerUps = [];
             updateScore();
-            startSpawning(); // Start spawning enemies again
+            startSpawning();
         }
 
         function updateScore() {
@@ -276,7 +270,7 @@
                         playerRect.y < enemyRect.y + enemyRect.height &&
                         playerRect.height + playerRect.y > enemyRect.y
                     ) {
-                        endGame(); // Modify this line
+                        endGame();
                     }
                 }
             });
@@ -379,6 +373,13 @@
             powerUps.forEach(powerUp => powerUp.remove());
             powerUps = [];
 
+            // Check if the current score is greater than the high score
+            if (score > highScore) {
+                highScore = score; // Update the high score
+                localStorage.setItem('highScore', highScore); // Save the new high score in local storage
+                highScoreBoard.innerText = `High Score: ${highScore}`; // Update the display
+            }
+
             // Show the starting screen with the score
             startingScreen.style.display = 'flex';
             document.getElementById('startingText').innerText = `You scored ${score}. Use WASD to play again`;
@@ -417,6 +418,7 @@
 
         function startGame() {
             resetGame();
+            highScoreBoard.innerText = `High Score: ${highScore}`; // Ensure to display the current high score
             gameInterval = setInterval(() => {
                 if (!isPaused) {
                     score++;
@@ -479,6 +481,12 @@
                 document.getElementById('startingText').innerText = 'The game is paused. Use WASD to unpause';
             }
         });
+
+        startGame(); // Start the game
+    </script>
+</body>
+</html>
+
 
         startGame(); // Start the game
     </script>
