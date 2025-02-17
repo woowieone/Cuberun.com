@@ -25,7 +25,6 @@
             background-color: blue;
             opacity: 1;
             z-index: 10;
-            /* border-radius: 5px;  Uncomment this line to make it rounded */
         }
 
         .enemy {
@@ -34,7 +33,6 @@
             height: 30px;
             background-color: red;
             transition: background-color 0.3s;
-            /* border-radius: 5px;  Uncomment this line to make it rounded */
         }
 
         .power-up {
@@ -44,7 +42,6 @@
             background-color: yellow;
             background-size: contain;
             background-repeat: no-repeat;
-            /* border-radius: 5px;  Uncomment this line to make it rounded */
         }
 
         .pixel {
@@ -158,7 +155,7 @@
         let speedBoostEndTime = 0;
         let isPaused = true;
         let isSpawningActive = false;
-        let enemySpeed = 0.7;
+        let enemySpeed = 0.7; // Initial enemy speed
         const maxEnemySpeed = enemySpeed * 2;
 
         let keys = {
@@ -172,6 +169,7 @@
 
         function resetGame() {
             score = 0;
+            enemySpeed = 0.7; // Reset enemy speed multiplier here
             enemies.forEach(enemy => enemy.remove());
             enemies = [];
             powerUps.forEach(powerUp => powerUp.remove());
@@ -186,6 +184,7 @@
 
         function startSpawning() {
             if (isSpawningActive) return;
+
             isSpawningActive = true;
 
             enemySpawnInterval = setInterval(() => {
@@ -334,16 +333,16 @@
             if (isPaused) return;
 
             const rect = player.getBoundingClientRect();
+            let dx = 0;
+            let dy = 0;
 
-            if (keys.w && rect.top > 0) {
-                player.style.top = `${rect.top - playerSpeed}px`;
-            } else if (keys.s && rect.bottom < window.innerHeight) {
-                player.style.top = `${rect.top + playerSpeed}px`;
-            } else if (keys.a && rect.left > 0) {
-                player.style.left = `${rect.left - playerSpeed}px`;
-            } else if (keys.d && rect.right < window.innerWidth) {
-                player.style.left = `${rect.left + playerSpeed}px`;
-            }
+            if (keys.w && rect.top > 0) dy -= playerSpeed;
+            if (keys.s && rect.bottom < window.innerHeight) dy += playerSpeed;
+            if (keys.a && rect.left > 0) dx -= playerSpeed;
+            if (keys.d && rect.right < window.innerWidth) dx += playerSpeed;
+
+            player.style.left = `${rect.left + dx}px`;
+            player.style.top = `${rect.top + dy}px`;
 
             if (Date.now() < speedBoostEndTime) {
                 createTrail(rect.left + 15, rect.top + 15);
@@ -356,7 +355,6 @@
 
         function handlePowerUp(powerUp) {
             const type = powerUp.getAttribute('data-type');
-
             if (type == 'speed') {
                 const now = Date.now();
                 if (now < speedBoostEndTime) {
@@ -473,10 +471,10 @@
                 }
             }
 
-            if (event.key === 'w') { keys.w = true; keys.s = false; keys.a = false; keys.d = false; }
-            if (event.key === 'a') { keys.w = false; keys.s = false; keys.a = true; keys.d = false; }
-            if (event.key === 's') { keys.w = false; keys.s = true; keys.a = false; keys.d = false; }
-            if (event.key === 'd') { keys.w = false; keys.s = false; keys.a = false; keys.d = true; }
+            if (event.key === 'w') keys.w = true;
+            if (event.key === 'a') keys.a = true;
+            if (event.key === 's') keys.s = true;
+            if (event.key === 'd') keys.d = true;
         });
 
         document.addEventListener('keyup', function (event) {
