@@ -129,7 +129,7 @@
             <img src="https://imagizer.imageshack.com/v2/361x361q70/r/924/sAFgKF.png" alt="Pause" id="buttonImage">
         </button>
         <div id="startingScreen">
-            <img id="logo" src="https://imagizer.imageshack.com/img924/226/No6GcW.png" alt="Logo">
+            <img id="logo" src="https://imagizer.imageshack.com/v2/500x500q90/r/924/No6GcW.png" alt="Logo">
             <div id="startingText">Use WASD to start game</div>
         </div>
     </div>
@@ -155,7 +155,7 @@
         let speedBoostEndTime = 0;
         let isPaused = true;
         let isSpawningActive = false;
-        let enemySpeed = 0.7; // Initial enemy speed
+        let enemySpeed = 0.7;
         const maxEnemySpeed = enemySpeed * 2;
 
         let keys = {
@@ -165,11 +165,14 @@
             d: false,
         };
 
+        let despawnActive = false;
+
         highScoreBoard.innerText = `High Score: ${highScore}`;
 
         function resetGame() {
             score = 0;
-            enemySpeed = 0.7; // Reset enemy speed multiplier here
+            enemySpeed = 0.7;
+            despawnActive = false;
             enemies.forEach(enemy => enemy.remove());
             enemies = [];
             powerUps.forEach(powerUp => powerUp.remove());
@@ -184,7 +187,6 @@
 
         function startSpawning() {
             if (isSpawningActive) return;
-
             isSpawningActive = true;
 
             enemySpawnInterval = setInterval(() => {
@@ -229,16 +231,19 @@
 
             const x = Math.random() * (gameArea.clientWidth - 30);
             const y = Math.random() * (gameArea.clientHeight - 30);
+
             powerUp.style.left = `${x}px`;
             powerUp.style.top = `${y}px`;
 
-            const type = Math.random() < 0.5 ? 'speed' : 'freeze';
+            const type = ['speed', 'freeze', 'despawn'][Math.floor(Math.random() * 3)];
             powerUp.setAttribute('data-type', type);
 
             if (type === 'speed') {
                 powerUp.style.backgroundImage = "url('https://imagizer.imageshack.com/v2/361x361q70/r/923/PoWJh7.png')";
-            } else {
+            } else if (type === 'freeze') {
                 powerUp.style.backgroundImage = "url('https://cdn4.iconfinder.com/data/icons/snow-glyph/512/Flake_snow_snowflake-512.png')";
+            } else if (type === 'despawn') {
+                powerUp.style.backgroundImage = "url('https://cdn3.iconfinder.com/data/icons/thanks-giving-essential-flat/48/Thanksgiving_Essentials-40-512.png')";
             }
 
             gameArea.appendChild(powerUp);
@@ -282,16 +287,20 @@
         function checkCollisions() {
             const playerRect = player.getBoundingClientRect();
             enemies.forEach(enemy => {
-                if (!frozenEnemies.includes(enemy)) {
-                    const enemyRect = enemy.getBoundingClientRect();
-                    if (
-                        playerRect.x < enemyRect.x + enemyRect.width &&
-                        playerRect.x + playerRect.width > enemyRect.x &&
-                        playerRect.y < enemyRect.y + enemyRect.height &&
-                        playerRect.height + playerRect.y > enemyRect.y
-                    ) {
-                        endGame();
-                    }
+                const enemyRect = enemy.getBoundingClientRect();
+
+                // Do not end game if the enemy is frozen
+                if (frozenEnemies.includes(enemy)) {
+                    return; // Skip collision check for frozen enemies
+                }
+
+                if (
+                    playerRect.x < enemyRect.x + enemyRect.width &&
+                    playerRect.x + playerRect.width > enemyRect.x &&
+                    playerRect.y < enemyRect.y + enemyRect.height &&
+                    playerRect.height + playerRect.y > enemyRect.y
+                ) {
+                    endGame(); // End game for collision with active enemies
                 }
             });
         }
@@ -355,26 +364,46 @@
 
         function handlePowerUp(powerUp) {
             const type = powerUp.getAttribute('data-type');
-            if (type == 'speed') {
-                const now = Date.now();
-                if (now < speedBoostEndTime) {
-                    speedBoostEndTime += 10000; // Extend time
-                } else {
-                    playerSpeed = 5; // Speed boost
-                    speedBoostEndTime = now + 10000; // Set new end time
-                }
-            } else if (type == 'freeze') {
-                frozenEnemies = [...enemies];
-                frozenEnemies.forEach(enemy => {
-                    enemy.style.backgroundColor = 'cyan';
-                });
 
-                setTimeout(() => {
+            switch (type) {
+                case 'speed':
+                    const now = Date.now();
+                    if (now < speedBoostEndTime) {
+                        speedBoostEndTime += 10000; // Extend time
+                    } else {
+                        playerSpeed = 5; // Speed boost
+                        speedBoostEndTime = now + 10000; // Set new end time
+                    }
+                    break;
+                case 'freeze':
+                    frozenEnemies = [...enemies];
                     frozenEnemies.forEach(enemy => {
-                        enemy.style.backgroundColor = 'red';
+                        enemy.style.backgroundColor = 'cyan';
                     });
-                    frozenEnemies = [];
-                }, 5000);
+
+                    setTimeout(() => {
+                        frozenEnemies.forEach(enemy => {
+                            enemy.style.backgroundColor = 'red';
+                        });
+                        frozenEnemies = [];
+                    }, 5000);
+                    break;
+                case 'despawn':
+                    despawnActive = true;
+                    player.style.backgroundColor = 'red';
+
+                    enemies.forEach(enemy => {
+                        enemy.style.backgroundColor = 'blue';
+                    });
+
+                    setTimeout(() => {
+                        despawnActive = false;
+                        player.style.backgroundColor = 'blue'; // Reset player color
+                        enemies.forEach(enemy => {
+                            enemy.style.backgroundColor = 'red';
+                        });
+                    }, 3000);
+                    break;
             }
 
             powerUp.remove();
@@ -451,12 +480,12 @@
                 : 'https://imagizer.imageshack.com/v2/361x361q70/r/924/sAFgKF.png';
 
             if (isPaused) {
-                startingScreen.style.display = 'flex'; // Display starting screen
+                startingScreen.style.display = 'flex';
                 document.getElementById('startingText').innerText = 'The game is paused. Use WASD to unpause';
             } else {
-                startingScreen.style.display = 'none'; // Hide starting screen
+                startingScreen.style.display = 'none';
                 if (!isSpawningActive) {
-                    startSpawning(); // Restart spawning when unpausing
+                    startSpawning();
                 }
             }
         });
@@ -464,10 +493,10 @@
         document.addEventListener('keydown', function (event) {
             if (event.key === 'w' || event.key === 'a' || event.key === 's' || event.key === 'd') {
                 if (isPaused) {
-                    isPaused = false; // Unpause the game
-                    buttonImage.src = 'https://imagizer.imageshack.com/v2/361x361q70/r/924/sAFgKF.png'; // Update pause button image
-                    startingScreen.style.display = 'none'; // Hide starting screen
-                    startSpawning(); // Start spawning enemies again
+                    isPaused = false;
+                    buttonImage.src = 'https://imagizer.imageshack.com/v2/361x361q70/r/924/sAFgKF.png';
+                    startingScreen.style.display = 'none';
+                    startSpawning();
                 }
             }
 
@@ -488,12 +517,13 @@
             if (document.hidden) {
                 isPaused = true;
                 buttonImage.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdRyxOH6cg2DlA-GPCASXmYlVia1Kt5U8fTw&s';
-                startingScreen.style.display = 'flex'; // Show starting screen
+                startingScreen.style.display = 'flex';
                 document.getElementById('startingText').innerText = 'The game is paused. Use WASD to unpause';
             }
         });
 
         startGame(); // Start the game
+
     </script>
 </body>
 
