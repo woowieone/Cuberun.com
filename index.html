@@ -1,552 +1,532 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Cuberun</title>
- <style>
-  body {
-   margin: 0;
-   overflow: hidden;
-  }
-
-  #gameArea {
-   position: relative;
-   width: 100vw;
-   height: 100vh;
-   background-color: black;
-  }
-
-  .player {
-   position: absolute;
-   width: 30px;
-   height: 30px;
-   background-color: blue;
-   opacity: 1;
-   z-index: 10;
-  }
-
-  .enemy {
-   position: absolute;
-   width: 30px;
-   height: 30px;
-   background-color: red;
-   transition: background-color 0.3s;
-  }
-
-  .power-up {
-   position: absolute;
-   width: 30px;
-   height: 30px;
-   background-color: yellow;
-   background-size: contain;
-   background-repeat: no-repeat;
-  }
-
-  .pixel {
-   position: absolute;
-   width: 5px;
-   height: 5px;
-   background-color: blue;
-   transition: transform 0.5s,
-    opacity 0.5s;
-  }
-
-  .trail {
-   position: absolute;
-   width: 20px;
-   height: 20px;
-   background-color: rgba(255, 255, 255, 0.5);
-   pointer-events: none;
-   z-index: 5;
-  }
-
-  #highScoreBoard {
-   position: absolute;
-   top: 5px;
-   left: 5px;
-   font-size: 24px;
-   color: white;
-  }
-
-  #scoreBoard {
-   position: absolute;
-   top: 30px;
-   left: 5px;
-   font-size: 24px;
-   color: white;
-  }
-
-  #pauseButton {
-   position: absolute;
-   top: 10px;
-   right: 10px;
-   border: none;
-   background: none;
-   cursor: pointer;
-   outline: none;
-  }
-
-  #buttonImage {
-   width: 60px;
-   height: 60px;
-   object-fit: contain;
-  }
-
-  #startingScreen {
-   position: absolute;
-   top: 0;
-   left: 0;
-   width: 100vw;
-   height: 100vh;
-   background: rgba(0, 0, 0, 0.5);
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   justify-content: center;
-   z-index: 20;
-  }
-
-  #startingText {
-   font-size: 24px;
-   color: white;
-  }
-
-  #logo {
-   width: 100px;
-   height: auto;
-   margin-bottom: 20px;
-  }
- </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuberun</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        #gameArea {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-color: black;
+        }
+        .player {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: blue;
+            opacity: 1;
+            z-index: 10;
+        }
+        .enemy {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: red;
+            transition: background-color 0.3s;
+        }
+        .power-up {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: yellow;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        .pixel {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: blue;
+            transition: transform 0.5s, opacity 0.5s;
+        }
+        .trail {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            z-index: 5;
+        }
+        #highScoreBoard, #scoreBoard {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-size: 24px;
+            color: white;
+        }
+        #pauseButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            outline: none;
+        }
+        #buttonImage {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+        #startingScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+        }
+        #startingText {
+            font-size: 24px;
+            color: white;
+        }
+        #logo {
+            width: 100px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
-
 <body>
- <div id="gameArea">
-  <div id="scoreBoard">Score: 0</div>
-  <div id="highScoreBoard">High Score: 0</div>
-  <div class="player" id="player"></div>
-  <button id="pauseButton">
-   <img src="https://imagizer.imageshack.com/v2/361x361q70/r/924/sAFgKF.png" alt="Pause" id="buttonImage">
-  </button>
-  <div id="startingScreen">
-   <img id="logo" src="https://imagizer.imageshack.com/v2/500x500q90/r/924/No6GcW.png" alt="Logo">
-   <div id="startingText">Use WASD to start game</div>
-  </div>
- </div>
+    <div id="gameArea">
+        <div id="scoreBoard">Score: 0</div>
+        <div id="highScoreBoard">High Score: 0</div>
+        <div class="player" id="player"></div>
+        <button id="pauseButton">
+            <img src="https://imagizer.imageshack.com/v2/361x361q70/r/924/sAFgKF.png" alt="Pause" id="buttonImage">
+        </button>
+        <div id="startingScreen">
+            <img id="logo" src="https://imagizer.imageshack.com/v2/500x500q90/r/924/No6GcW.png" alt="Logo">
+            <div id="startingText">Use WASD to start game</div>
+        </div>
+    </div>
 
- <script>
-  const gameArea = document.getElementById('gameArea');
-  const player = document.getElementById('player');
-  const scoreBoard = document.getElementById('scoreBoard');
-  const highScoreBoard = document.getElementById('highScoreBoard');
-  const pauseButton = document.getElementById('pauseButton');
-  const buttonImage = document.getElementById('buttonImage');
-  const startingScreen = document.getElementById('startingScreen');
+    <script>
+        const gameArea = document.getElementById('gameArea');
+        const player = document.getElementById('player');
+        const scoreBoard = document.getElementById('scoreBoard');
+        const highScoreBoard = document.getElementById('highScoreBoard');
+        const pauseButton = document.getElementById('pauseButton');
+        const buttonImage = document.getElementById('buttonImage');
+        const startingScreen = document.getElementById('startingScreen');
 
-  let score = 0;
-  let highScore = localStorage.getItem('highScore') ? parseInt(localStorage.getItem('highScore')) : 0;
-  let enemies = [];
-  let powerUps = [];
-  let enemySpawnInterval;
-  let powerUpSpawnInterval;
-  let gameInterval;
-  let playerSpeed = 2.25;
-  let frozenEnemies = [];
-  let speedBoostEndTime = 0;
-  let isPaused = true;
-  let isSpawningActive = false;
-  let enemySpeed = 0.7;
-  const maxEnemySpeed = enemySpeed * 2.5;
+        let score = 0;
+        let highScore = localStorage.getItem('highScore') ? parseInt(localStorage.getItem('highScore')) : 0;
+        let enemies = [];
+        let powerUps = [];
+        let enemySpawnInterval;
+        let powerUpSpawnInterval;
+        let gameInterval;
+        let playerSpeed = 2.25;
+        let frozenEnemies = [];
+        let speedBoostEndTime = 0;
+        let isPaused = true;
+        let isSpawningActive = false;
+        let enemySpeed = 0.7;
+        const maxEnemySpeed = enemySpeed * 2.5;
 
-  let keys = {
-   w: false,
-   a: false,
-   s: false,
-   d: false,
-  };
+        let keys = {
+            w: false,
+            a: false,
+            s: false,
+            d: false,
+        };
 
-  let despawnActive = false;
+        let despawnActive = false;
 
-  highScoreBoard.innerText = `High Score: ${highScore}`;
+        highScoreBoard.innerText = `High Score: ${highScore}`;
 
-  function resetGame() {
-   score = 0;
-   enemySpeed = 0.7;
-   despawnActive = false;
-   enemies.forEach(enemy => enemy.remove());
-   enemies = [];
-   powerUps.forEach(powerUp => powerUp.remove());
-   powerUps = [];
-   updateScore();
-   startSpawning();
-  }
+        function resetGame() {
+            score = 0;
+            enemySpeed = 0.7;
+            despawnActive = false;
+            enemies.forEach(enemy => enemy.remove());
+            enemies = [];
+            powerUps.forEach(powerUp => powerUp.remove());
+            powerUps = [];
+            updateScore();
+            startSpawning();
+        }
 
-  function updateScore() {
-   scoreBoard.innerText = `Score: ${score}`;
-  }
+        function updateScore() {
+            scoreBoard.innerText = `Score: ${score}`;
+        }
 
-  function startSpawning() {
-   if (isSpawningActive) return;
-   isSpawningActive = true;
+        function startSpawning() {
+            if (isSpawningActive) return;
+            isSpawningActive = true;
 
-   enemySpawnInterval = setInterval(() => {
-    if (!isPaused) {
-     spawnEnemy();
-    }
-   }, 5000);
+            enemySpawnInterval = setInterval(() => {
+                if (!isPaused) {
+                    spawnEnemy();
+                }
+            }, 5000);
 
-   powerUpSpawnInterval = setInterval(() => {
-    if (!isPaused) {
-     spawnPowerUp();
-    }
-   }, 20000);
-  }
+            powerUpSpawnInterval = setInterval(() => {
+                if (!isPaused) {
+                    spawnPowerUp();
+                }
+            }, 20000);
+        }
 
-  function spawnEnemy() {
-   const enemy = document.createElement('div');
-   enemy.classList.add('enemy');
+        function spawnEnemy() {
+            const enemy = document.createElement('div');
+            enemy.classList.add('enemy');
 
-   const playerRect = player.getBoundingClientRect();
-   let x, y, distance;
+            const playerRect = player.getBoundingClientRect();
+            let x, y, distance;
 
-   do {
-    x = Math.random() * (gameArea.clientWidth - 30);
-    y = Math.random() * (gameArea.clientHeight - 30);
-    const enemyRect = {
-     left: x,
-     top: y,
-     width: 30,
-     height: 30
-    };
-    distance = Math.sqrt(
-     Math.pow(playerRect.left + playerRect.width / 2 - (enemyRect.left + enemyRect.width / 2), 2) +
-     Math.pow(playerRect.top + playerRect.height / 2 - (enemyRect.top + enemyRect.height / 2), 2)
-    );
-   } while (distance < 120);
+            do {
+                x = Math.random() * (gameArea.clientWidth - 30);
+                y = Math.random() * (gameArea.clientHeight - 30);
+                const enemyRect = {
+                    left: x,
+                    top: y,
+                    width: 30,
+                    height: 30
+                };
+                distance = Math.sqrt(
+                    Math.pow(playerRect.left + playerRect.width / 2 - (enemyRect.left + enemyRect.width / 2), 2) +
+                    Math.pow(playerRect.top + playerRect.height / 2 - (enemyRect.top + enemyRect.height / 2), 2)
+                );
+            } while (distance < 120);
 
-   enemy.style.left = `${x}px`;
-   enemy.style.top = `${y}px`;
-   gameArea.appendChild(enemy);
-   enemies.push(enemy);
-  }
+            enemy.style.left = `${x}px`;
+            enemy.style.top = `${y}px`;
+            gameArea.appendChild(enemy);
+            enemies.push(enemy);
+        }
 
-  function spawnPowerUp() {
-   const powerUp = document.createElement('div');
-   powerUp.classList.add('power-up');
+        function spawnPowerUp() {
+            const powerUp = document.createElement('div');
+            powerUp.classList.add('power-up');
 
-   const x = Math.random() * (gameArea.clientWidth - 30);
-   const y = Math.random() * (gameArea.clientHeight - 30);
+            const x = Math.random() * (gameArea.clientWidth - 30);
+            const y = Math.random() * (gameArea.clientHeight - 30);
 
-   powerUp.style.left = `${x}px`;
-   powerUp.style.top = `${y}px`;
+            powerUp.style.left = `${x}px`;
+            powerUp.style.top = `${y}px`;
 
-   const type = ['speed', 'freeze', 'despawn'][Math.floor(Math.random() * 3)];
-   powerUp.setAttribute('data-type', type);
+            const type = ['speed', 'freeze', 'despawn'][Math.floor(Math.random() * 3)];
+            powerUp.setAttribute('data-type', type);
 
-   if (type === 'speed') {
-    powerUp.style.backgroundImage = "url('https://imagizer.imageshack.com/v2/361x361q70/r/923/PoWJh7.png')";
-   } else if (type === 'freeze') {
-    powerUp.style.backgroundImage = "url('https://cdn4.iconfinder.com/data/icons/snow-glyph/512/Flake_snow_snowflake-512.png')";
-   } else if (type === 'despawn') {
-    powerUp.style.backgroundImage = "url('https://static.thenounproject.com/png/1181336-200.png')";
-   }
+            if (type === 'speed') {
+                powerUp.style.backgroundImage = "url('https://imagizer.imageshack.com/v2/361x361q70/r/923/PoWJh7.png')";
+            } else if (type === 'freeze') {
+                powerUp.style.backgroundImage = "url('https://cdn4.iconfinder.com/data/icons/snow-glyph/512/Flake_snow_snowflake-512.png')";
+            } else if (type === 'despawn') {
+                powerUp.style.backgroundImage = "url('https://static.thenounproject.com/png/1181336-200.png')";
+            }
 
-   gameArea.appendChild(powerUp);
-   powerUps.push(powerUp);
+            gameArea.appendChild(powerUp);
+            powerUps.push(powerUp);
 
-   setTimeout(() => {
-    if (gameArea.contains(powerUp)) {
-     powerUp.remove();
-     powerUps = powerUps.filter(p => p !== powerUp);
-    }
-   }, 80000);
-  }
+            setTimeout(() => {
+                if (gameArea.contains(powerUp)) {
+                    powerUp.remove();
+                    powerUps = powerUps.filter(p => p !== powerUp);
+                }
+            }, 80000);
+        }
 
-  function moveEnemies() {
-   enemies.forEach((enemy) => {
-    if (!frozenEnemies.includes(enemy)) {
-     const enemyRect = enemy.getBoundingClientRect();
-     const playerRect = player.getBoundingClientRect();
-     const dx = playerRect.x - enemyRect.x;
-     const dy = playerRect.y - enemyRect.y;
-     const distance = Math.sqrt(dx * dx + dy * dy);
-     if (distance > 1) {
-      enemy.style.left = `${enemyRect.x + (dx / distance) * enemySpeed}px`;
-      enemy.style.top = `${enemyRect.y + (dy / distance) * enemySpeed}px`;
-     }
-    }
-   });
-  }
+        function moveEnemies() {
+            enemies.forEach((enemy) => {
+                if (!frozenEnemies.includes(enemy)) {
+                    const enemyRect = enemy.getBoundingClientRect();
+                    const playerRect = player.getBoundingClientRect();
+                    const dx = playerRect.x - enemyRect.x;
+                    const dy = playerRect.y - enemyRect.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
 
-  function increaseEnemySpeed() {
-   if (!isPaused && frozenEnemies.length === 0) {
-    if (enemySpeed < maxEnemySpeed) {
-     enemySpeed *= 1.01;
-     if (enemySpeed > maxEnemySpeed) {
-      enemySpeed = maxEnemySpeed;
-     }
-    }
-   }
-  }
+                    if (distance > 1) {
+                        // Check if despawn power-up is active
+                        if (despawnActive) {
+                            enemy.style.left = `${enemyRect.x - (dx / distance) * enemySpeed}px`;
+                            enemy.style.top = `${enemyRect.y - (dy / distance) * enemySpeed}px`;
+                        } else {
+                            enemy.style.left = `${enemyRect.x + (dx / distance) * enemySpeed}px`;
+                            enemy.style.top = `${enemyRect.y + (dy / distance) * enemySpeed}px`;
+                        }
+                    }
+                }
+            });
+        }
 
-  function checkCollisions() {
-   const playerRect = player.getBoundingClientRect();
-   enemies.forEach(enemy => {
-    const enemyRect = enemy.getBoundingClientRect();
+        function increaseEnemySpeed() {
+            if (!isPaused && frozenEnemies.length === 0) {
+                if (enemySpeed < maxEnemySpeed) {
+                    enemySpeed *= 1.01;
+                    if (enemySpeed > maxEnemySpeed) {
+                        enemySpeed = maxEnemySpeed;
+                    }
+                }
+            }
+        }
 
-    //  NEW CODE
-    if (despawnActive && enemy.style.backgroundColor === 'blue') {
-     if (
-      playerRect.x < enemyRect.x + enemyRect.width &&
-      playerRect.x + playerRect.width > enemyRect.x &&
-      playerRect.y < enemyRect.y + enemyRect.height &&
-      playerRect.height + playerRect.y > enemyRect.y
-     ) {
-      enemy.remove();
-      enemies = enemies.filter(e => e !== enemy);
-      score += 5;
-      updateScore();
-      return;
-     }
-    }
-    // END NEW CODE
+        function checkCollisions() {
+            const playerRect = player.getBoundingClientRect();
+            enemies.forEach(enemy => {
+                const enemyRect = enemy.getBoundingClientRect();
 
-    // Do not end game if the enemy is frozen
-    if (frozenEnemies.includes(enemy)) {
-     return; // Skip collision check for frozen enemies
-    }
+                if (despawnActive && enemy.style.backgroundColor === 'blue') {
+                    if (
+                        playerRect.x < enemyRect.x + enemyRect.width &&
+                        playerRect.x + playerRect.width > enemyRect.x &&
+                        playerRect.y < enemyRect.y + enemyRect.height &&
+                        playerRect.height + playerRect.y > enemyRect.y
+                    ) {
+                        enemy.remove();
+                        enemies = enemies.filter(e => e !== enemy);
+                        score += 5;
+                        updateScore();
+                        return;
+                    }
+                }
 
-    if (
-     playerRect.x < enemyRect.x + enemyRect.width &&
-     playerRect.x + playerRect.width > enemyRect.x &&
-     playerRect.y < enemyRect.y + enemyRect.height &&
-     playerRect.height + playerRect.y > enemyRect.y
-    ) {
-     endGame(); // End game for collision with active enemies
-    }
-   });
-  }
+                if (frozenEnemies.includes(enemy)) {
+                    return; // Skip collision check for frozen enemies
+                }
 
-  function checkPowerUpCollisions() {
-   const playerRect = player.getBoundingClientRect();
-   powerUps.forEach(powerUp => {
-    const powerUpRect = powerUp.getBoundingClientRect();
-    if (
-     playerRect.x < powerUpRect.x + powerUpRect.width &&
-     playerRect.x + playerRect.width > powerUpRect.x &&
-     playerRect.y < powerUpRect.y + powerUpRect.height &&
-     playerRect.height + playerRect.y > powerUpRect.y
-    ) {
-     handlePowerUp(powerUp);
-    }
-   });
-  }
+                if (
+                    playerRect.x < enemyRect.x + enemyRect.width &&
+                    playerRect.x + playerRect.width > enemyRect.x &&
+                    playerRect.y < enemyRect.y + enemyRect.height &&
+                    playerRect.height + playerRect.y > enemyRect.y
+                ) {
+                    endGame(); // End game for collision with active enemies
+                }
+            });
+        }
 
-  function createTrail(x, y) {
-   const trail = document.createElement('div');
-   trail.classList.add('trail');
-   trail.style.left = `${x - 10}px`;
-   trail.style.top = `${y - 10}px`;
-   gameArea.appendChild(trail);
+        function checkPowerUpCollisions() {
+            const playerRect = player.getBoundingClientRect();
+            powerUps.forEach(powerUp => {
+                const powerUpRect = powerUp.getBoundingClientRect();
+                if (
+                    playerRect.x < powerUpRect.x + powerUpRect.width &&
+                    playerRect.x + playerRect.width > powerUpRect.x &&
+                    playerRect.y < powerUpRect.y + powerUpRect.height &&
+                    playerRect.height + playerRect.y > powerUpRect.y
+                ) {
+                    handlePowerUp(powerUp);
+                }
+            });
+        }
 
-   setTimeout(() => {
-    trail.style.opacity = '0';
-    setTimeout(() => {
-     trail.remove();
-     if (Date.now() >= speedBoostEndTime) {
-      playerSpeed = 2.25;
-     }
-    }, 300);
-   }, 100);
-  }
+        function createTrail(x, y) {
+            const trail = document.createElement('div');
+            trail.classList.add('trail');
+            trail.style.left = `${x - 10}px`;
+            trail.style.top = `${y - 10}px`;
+            gameArea.appendChild(trail);
 
-  function movePlayer() {
-   if (isPaused) return;
+            setTimeout(() => {
+                trail.style.opacity = '0';
+                setTimeout(() => {
+                    trail.remove();
+                    if (Date.now() >= speedBoostEndTime) {
+                        playerSpeed = 2.25;
+                    }
+                }, 300);
+            }, 100);
+        }
 
-   const rect = player.getBoundingClientRect();
-   let dx = 0;
-   let dy = 0;
+        function movePlayer() {
+            if (isPaused) return;
 
-   if (keys.w && rect.top > 0) dy -= playerSpeed;
-   if (keys.s && rect.bottom < window.innerHeight) dy += playerSpeed;
-   if (keys.a && rect.left > 0) dx -= playerSpeed;
-   if (keys.d && rect.right < window.innerWidth) dx += playerSpeed;
+            const rect = player.getBoundingClientRect();
+            let dx = 0;
+            let dy = 0;
 
-   player.style.left = `${rect.left + dx}px`;
-   player.style.top = `${rect.top + dy}px`;
+            if (keys.w && rect.top > 0) dy -= playerSpeed;
+            if (keys.s && rect.bottom < window.innerHeight) dy += playerSpeed;
+            if (keys.a && rect.left > 0) dx -= playerSpeed;
+            if (keys.d && rect.right < window.innerWidth) dx += playerSpeed;
 
-   if (Date.now() < speedBoostEndTime) {
-    createTrail(rect.left + 15, rect.top + 15);
-   }
+            player.style.left = `${rect.left + dx}px`;
+            player.style.top = `${rect.top + dy}px`;
 
-   moveEnemies();
-   checkCollisions();
-   checkPowerUpCollisions();
-  }
+            if (Date.now() < speedBoostEndTime) {
+                createTrail(rect.left + 15, rect.top + 15);
+            }
 
-  function handlePowerUp(powerUp) {
-   const type = powerUp.getAttribute('data-type');
+            moveEnemies();
+            checkCollisions();
+            checkPowerUpCollisions();
+        }
 
-   switch (type) {
-    case 'speed':
-     const now = Date.now();
-     if (now < speedBoostEndTime) {
-      speedBoostEndTime += 10000; // Extend time
-     } else {
-      playerSpeed = 5; // Speed boost
-      speedBoostEndTime = now + 10000; // Set new end time
-     }
-     break;
-    case 'freeze':
-     frozenEnemies = [...enemies];
-     frozenEnemies.forEach(enemy => {
-      enemy.style.backgroundColor = 'cyan';
-     });
+        function handlePowerUp(powerUp) {
+            const type = powerUp.getAttribute('data-type');
 
-     setTimeout(() => {
-      frozenEnemies.forEach(enemy => {
-       enemy.style.backgroundColor = 'red';
-      });
-      frozenEnemies = [];
-     }, 5000);
-     break;
-    case 'despawn':
-     despawnActive = true;
-     player.style.backgroundColor = 'red';
+            switch (type) {
+                case 'speed':
+                    const now = Date.now();
+                    if (now < speedBoostEndTime) {
+                        speedBoostEndTime += 10000; // Extend time
+                    } else {
+                        playerSpeed = 5; // Speed boost
+                        speedBoostEndTime = now + 10000; // Set new end time
+                    }
+                    break;
+                case 'freeze':
+                    frozenEnemies = [...enemies];
+                    frozenEnemies.forEach(enemy => {
+                        enemy.style.backgroundColor = 'cyan';
+                    });
 
-     enemies.forEach(enemy => {
-      enemy.style.backgroundColor = 'blue';
-     });
+                    setTimeout(() => {
+                        frozenEnemies.forEach(enemy => {
+                            enemy.style.backgroundColor = 'red';
+                        });
+                        frozenEnemies = [];
+                    }, 5000);
+                    break;
+                case 'despawn':
+                    despawnActive = true;
+                    player.style.backgroundColor = 'red';
 
-     setTimeout(() => {
-      despawnActive = false;
-      player.style.backgroundColor = 'blue'; // Reset player color
-      enemies.forEach(enemy => {
-       enemy.style.backgroundColor = 'red';
-      });
-     }, 3000);
-     break;
-   }
+                    enemies.forEach(enemy => {
+                        enemy.style.backgroundColor = 'blue';
+                    });
 
-   powerUp.remove();
-   powerUps = powerUps.filter(p => p !== powerUp);
-  }
+                    setTimeout(() => {
+                        despawnActive = false;
+                        player.style.backgroundColor = 'blue'; // Reset player color
+                        enemies.forEach(enemy => {
+                            enemy.style.backgroundColor = 'red';
+                        });
+                    }, 3000);
+                    break;
+            }
 
-  function endGame() {
-   clearInterval(enemySpawnInterval);
-   clearInterval(powerUpSpawnInterval);
-   isSpawningActive = false;
+            powerUp.remove();
+            powerUps = powerUps.filter(p => p !== powerUp);
+        }
 
-   enemies.forEach(enemy => enemy.remove());
-   enemies = [];
-   powerUps.forEach(powerUp => powerUp.remove());
-   powerUps = [];
+        function endGame() {
+            clearInterval(enemySpawnInterval);
+            clearInterval(powerUpSpawnInterval);
+            isSpawningActive = false;
 
-   if (score > highScore) {
-    highScore = score;
-    localStorage.setItem('highScore', highScore);
-    highScoreBoard.innerText = `High Score: ${highScore}`;
-   }
+            enemies.forEach(enemy => enemy.remove());
+            enemies = [];
+            powerUps.forEach(powerUp => powerUp.remove());
+            powerUps = [];
 
-   startingScreen.style.display = 'flex';
-   document.getElementById('startingText').innerText = `You scored ${score}. Use WASD to play again`;
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('highScore', highScore);
+                highScoreBoard.innerText = `High Score: ${highScore}`;
+            }
 
-   score = 0;
-   updateScore();
-   isPaused = true;
+            startingScreen.style.display = 'flex';
+            document.getElementById('startingText').innerText = `You scored ${score}. Use WASD to play again`;
 
-   createExplosion();
-  }
+            score = 0;
+            updateScore();
+            isPaused = true;
 
-  function createExplosion() {
-   const playerRect = player.getBoundingClientRect();
-   const explosionCount = 30;
+            createExplosion();
+        }
 
-   for (let i = 0; i < explosionCount; i++) {
-    const pixel = document.createElement('div');
-    pixel.classList.add('pixel');
-    pixel.style.left = `${playerRect.left + 10}px`;
-    pixel.style.top = `${playerRect.top + 10}px`;
-    const angle = Math.random() * 2 * Math.PI;
-    const distance = Math.random() * 30 + 20;
-    const translateX = Math.cos(angle) * distance;
-    const translateY = Math.sin(angle) * distance;
-    pixel.style.transform = `translate(${translateX}px, ${translateY}px)`;
-    pixel.style.opacity = '0';
-    gameArea.appendChild(pixel);
-    setTimeout(() => {
-     pixel.remove();
-    }, 500);
-   }
-  }
+        function createExplosion() {
+            const playerRect = player.getBoundingClientRect();
+            const explosionCount = 30;
 
-  function startGame() {
-   resetGame();
-   highScoreBoard.innerText = `High Score: ${highScore}`;
-   gameInterval = setInterval(() => {
-    if (!isPaused) {
-     score++;
-     updateScore();
-     movePlayer();
-    }
-   }, 1000 / 60);
+            for (let i = 0; i < explosionCount; i++) {
+                const pixel = document.createElement('div');
+                pixel.classList.add('pixel');
+                pixel.style.left = `${playerRect.left + 10}px`;
+                pixel.style.top = `${playerRect.top + 10}px`;
+                const angle = Math.random() * 2 * Math.PI;
+                const distance = Math.random() * 30 + 20;
+                const translateX = Math.cos(angle) * distance;
+                const translateY = Math.sin(angle) * distance;
+                pixel.style.transform = `translate(${translateX}px, ${translateY}px)`;
+                pixel.style.opacity = '0';
+                gameArea.appendChild(pixel);
+                setTimeout(() => {
+                    pixel.remove();
+                }, 500);
+            }
+        }
 
-   setInterval(increaseEnemySpeed, 5000);
-   startSpawning();
-  }
+        function startGame() {
+            resetGame();
+            highScoreBoard.innerText = `High Score: ${highScore}`;
+            gameInterval = setInterval(() => {
+                if (!isPaused) {
+                    score++;
+                    updateScore();
+                    movePlayer();
+                }
+            }, 1000 / 60);
 
-  pauseButton.addEventListener('click', function() {
-   isPaused = !isPaused;
-   buttonImage.src = isPaused ?
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdRyxOH6cg2DlA-GPCASXmYlVia1Kt5U8fTw&s' :
-    'https://imagizer.imageshack.com/v2/361x361q70/r/924/sAFgKF.png';
+            setInterval(increaseEnemySpeed, 5000);
+            startSpawning();
+        }
 
-   if (isPaused) {
-    startingScreen.style.display = 'flex';
-    document.getElementById('startingText').innerText = 'The game is paused. Use WASD to unpause';
-   } else {
-    startingScreen.style.display = 'none';
-    if (!isSpawningActive) {
-     startSpawning();
-    }
-   }
-  });
+        pauseButton.addEventListener('click', function() {
+            isPaused = !isPaused;
+            buttonImage.src = isPaused ?
+                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdRyxOH6cg2DlA-GPCASXmYlVia1Kt5U8fTw&s' :
+                'https://imagizer.imageshack.com/v2/361x361q70/r/924/sAFgKF.png';
 
-  document.addEventListener('keydown', function(event) {
-   if (event.key === 'w' || event.key === 'a' || event.key === 's' || event.key === 'd') {
-    if (isPaused) {
-     isPaused = false;
-     buttonImage.src = 'https://imagizer.imageshack.com/v2/361x361q70/r/924/sAFgKF.png';
-     startingScreen.style.display = 'none';
-     startSpawning();
-    }
-   }
+            if (isPaused) {
+                startingScreen.style.display = 'flex';
+                document.getElementById('startingText').innerText = 'The game is paused. Use WASD to unpause';
+            } else {
+                startingScreen.style.display = 'none';
+                if (!isSpawningActive) {
+                    startSpawning();
+                }
+            }
+        });
 
-   if (event.key === 'w') keys.w = true;
-   if (event.key === 'a') keys.a = true;
-   if (event.key === 's') keys.s = true;
-   if (event.key === 'd') keys.d = true;
-  });
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'w' || event.key === 'a' || event.key === 's' || event.key === 'd') {
+                if (isPaused) {
+                    isPaused = false;
+                    buttonImage.src = 'https://imagizer.imageshack.com/v2/361x361q70/r/924/sAFgKF.png';
+                    startingScreen.style.display = 'none';
+                    startSpawning();
+                }
+            }
 
-  document.addEventListener('keyup', function(event) {
-   if (event.key === 'w') keys.w = false;
-   if (event.key === 'a') keys.a = false;
-   if (event.key === 's') keys.s = false;
-   if (event.key === 'd') keys.d = false;
-  });
+            if (event.key === 'w') keys.w = true;
+            if (event.key === 'a') keys.a = true;
+            if (event.key === 's') keys.s = true;
+            if (event.key === 'd') keys.d = true;
+        });
 
-  document.addEventListener('visibilitychange', function() {
-   if (document.hidden) {
-    isPaused = true;
-    buttonImage.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdRyxOH6cg2DlA-GPCASXmYlVia1Kt5U8fTw&s';
-    startingScreen.style.display = 'flex';
-    document.getElementById('startingText').innerText = 'The game is paused. Use WASD to unpause';
-   }
-  });
+        document.addEventListener('keyup', function(event) {
+            if (event.key === 'w') keys.w = false;
+            if (event.key === 'a') keys.a = false;
+            if (event.key === 's') keys.s = false;
+            if (event.key === 'd') keys.d = false;
+        });
 
-  startGame(); // Start the game
- </script>
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                isPaused = true;
+                buttonImage.src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdRyxOH6cg2DlA-GPCASXmYlVia1Kt5U8fTw&s';
+                startingScreen.style.display = 'flex';
+                document.getElementById('startingText').innerText = 'The game is paused. Use WASD to unpause';
+            }
+        });
+
+        startGame(); // Start the game
+    </script>
 </body>
-
 </html>
