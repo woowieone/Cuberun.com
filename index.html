@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,12 +10,14 @@
             margin: 0;
             overflow: hidden;
         }
+
         #gameArea {
             position: relative;
             width: 100vw;
             height: 100vh;
             background-color: black;
         }
+
         .player {
             position: absolute;
             width: 30px;
@@ -23,6 +26,7 @@
             opacity: 1;
             z-index: 10;
         }
+
         .enemy {
             position: absolute;
             width: 30px;
@@ -30,6 +34,7 @@
             background-color: red;
             transition: background-color 0.3s;
         }
+
         .power-up {
             position: absolute;
             width: 30px;
@@ -38,6 +43,7 @@
             background-size: contain;
             background-repeat: no-repeat;
         }
+
         .pixel {
             position: absolute;
             width: 5px;
@@ -45,6 +51,7 @@
             background-color: blue;
             transition: transform 0.5s, opacity 0.5s;
         }
+
         .trail {
             position: absolute;
             width: 20px;
@@ -53,6 +60,7 @@
             pointer-events: none;
             z-index: 5;
         }
+
         #scoreBoard {
             position: absolute;
             top: 0px;
@@ -60,6 +68,7 @@
             font-size: 24px;
             color: white;
         }
+
         #highScoreBoard {
             position: absolute;
             top: 25px;
@@ -67,6 +76,7 @@
             font-size: 24px;
             color: white;
         }
+
         #pauseButton {
             position: absolute;
             top: 10px;
@@ -76,11 +86,13 @@
             cursor: pointer;
             outline: none;
         }
+
         #buttonImage {
             width: 60px;
             height: 60px;
             object-fit: contain;
         }
+
         #startingScreen {
             position: absolute;
             top: 0;
@@ -94,10 +106,12 @@
             justify-content: center;
             z-index: 20;
         }
+
         #startingText {
             font-size: 24px;
             color: white;
         }
+
         #logo {
             width: 100px;
             height: auto;
@@ -105,6 +119,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="gameArea">
         <div id="scoreBoard">Score: 0</div>
@@ -172,6 +187,7 @@
 
         function startSpawning() {
             if (isSpawningActive) return;
+
             isSpawningActive = true;
 
             enemySpawnInterval = setInterval(() => {
@@ -386,6 +402,7 @@
                         speedBoostEndTime = now + 10000; // Set new end time
                     }
                     break;
+
                 case 'freeze':
                     frozenEnemies = [...enemies];
                     frozenEnemies.forEach(enemy => {
@@ -399,6 +416,7 @@
                         frozenEnemies = [];
                     }, 5000);
                     break;
+
                 case 'despawn':
                     despawnActive = true;
                     player.style.backgroundColor = 'red';
@@ -536,4 +554,5 @@
         startGame(); // Start the game
     </script>
 </body>
+
 </html>
