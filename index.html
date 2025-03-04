@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -119,7 +118,6 @@
         }
     </style>
 </head>
-
 <body>
     <div id="gameArea">
         <div id="scoreBoard">Score: 0</div>
@@ -155,7 +153,7 @@
         let speedBoostEndTime = 0;
         let isPaused = true;
         let isSpawningActive = false;
-        let enemySpeed = 0.7;
+        let enemySpeed = 0.7; // Initial enemy speed
         const maxEnemySpeed = enemySpeed * 2.5;
 
         let keys = {
@@ -171,7 +169,7 @@
 
         function resetGame() {
             score = 0;
-            enemySpeed = 0.7;
+            enemySpeed = 0.7; // Reset enemy speed multiplier
             despawnActive = false;
             enemies.forEach(enemy => enemy.remove());
             enemies = [];
@@ -187,7 +185,6 @@
 
         function startSpawning() {
             if (isSpawningActive) return;
-
             isSpawningActive = true;
 
             enemySpawnInterval = setInterval(() => {
@@ -359,7 +356,7 @@
                 setTimeout(() => {
                     trail.remove();
                     if (Date.now() >= speedBoostEndTime) {
-                        playerSpeed = 2.25;
+                        playerSpeed = 2.25; // Reset player speed if speed boost has ended
                     }
                 }, 300);
             }, 100);
@@ -440,30 +437,34 @@
         }
 
         function endGame() {
-            clearInterval(enemySpawnInterval);
-            clearInterval(powerUpSpawnInterval);
-            isSpawningActive = false;
+    clearInterval(enemySpawnInterval);
+    clearInterval(powerUpSpawnInterval);
+    isSpawningActive = false;
 
-            enemies.forEach(enemy => enemy.remove());
-            enemies = [];
-            powerUps.forEach(powerUp => powerUp.remove());
-            powerUps = [];
+    enemies.forEach(enemy => enemy.remove());
+    enemies = [];
+    powerUps.forEach(powerUp => powerUp.remove());
+    powerUps = [];
 
-            if (score > highScore) {
-                highScore = score;
-                localStorage.setItem('highScore', highScore);
-                highScoreBoard.innerText = `High Score: ${highScore}`;
-            }
+    // Reset enemy speed to 0.7 upon ending the game
+    enemySpeed = 0.7;
 
-            startingScreen.style.display = 'flex';
-            document.getElementById('startingText').innerText = `You scored ${score}. Use WASD to play again`;
+    if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('highScore', highScore);
+        highScoreBoard.innerText = `High Score: ${highScore}`;
+    }
 
-            score = 0;
-            updateScore();
-            isPaused = true;
+    startingScreen.style.display = 'flex';
+    document.getElementById('startingText').innerText = `You scored ${score}. Use WASD to play again`;
 
-            createExplosion();
-        }
+    score = 0;
+    updateScore();
+    isPaused = true;
+
+    createExplosion();
+}
+
 
         function createExplosion() {
             const playerRect = player.getBoundingClientRect();
@@ -497,7 +498,6 @@
                     movePlayer();
                 }
             }, 1000 / 60);
-
             setInterval(increaseEnemySpeed, 5000);
             startSpawning();
         }
@@ -554,5 +554,4 @@
         startGame(); // Start the game
     </script>
 </body>
-
 </html>
